@@ -1,0 +1,10 @@
+2026-08-27 03:12:01 INFO  worker-3 batch job nightly-aggregate started
+2026-08-27 03:14:22 WARN  worker-3 heap usage 82% (threshold 80%)
+2026-08-27 03:15:40 WARN  worker-3 heap usage 91%
+2026-08-27 03:16:05 ERROR worker-3 java.lang.OutOfMemoryError: Java heap space
+2026-08-27 03:16:06 ERROR kernel  OOM killed process 4312 (worker-3)
+2026-08-27 03:16:10 INFO  supervisor restarting worker-3
+2026-08-27 03:19:48 ERROR worker-3 java.lang.OutOfMemoryError: Java heap space
+2026-08-27 03:19:49 ERROR kernel  OOM killed process 4377 (worker-3)
+2026-08-27 03:20:02 ERROR api-gw  upstream timeout /v1/reports (worker pool exhausted)
+2026-08-27 03:20:15 ERROR api-gw  5xx rate 34% over last 1m

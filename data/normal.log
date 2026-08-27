@@ -1,0 +1,6 @@
+2026-08-27 10:00:01 INFO  api-gw  GET /health 200 3ms
+2026-08-27 10:00:14 INFO  api-gw  POST /v1/orders 201 41ms
+2026-08-27 10:01:02 INFO  deploy  release v2.4.1 rolled out to 100%
+2026-08-27 10:03:55 INFO  api-gw  GET /v1/orders 200 38ms
+2026-08-27 10:05:20 INFO  cache   hit ratio 96.2% (last 5m)
+2026-08-27 10:07:44 INFO  api-gw  p95 latency 52ms (last 5m, baseline 55ms)
