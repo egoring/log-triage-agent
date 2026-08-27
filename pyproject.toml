@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "log-triage-agent"
+version = "0.1.0"
+description = "LangGraph mini agent that triages server logs: classify, branch by severity, retry loop, deterministic report"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = ["langgraph>=0.2", "httpx>=0.27"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+log-triage = "log_triage.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/log_triage"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
