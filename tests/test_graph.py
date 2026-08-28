@@ -94,3 +94,56 @@ def test_empty_highlights_shows_placeholder():
     llm = ScriptedLLM([NORMAL, '{"highlights": []}'])
     result = run_triage(llm, "log")
     assert "특이사항 없음" in result["report"]
+
+
+class FakeTracer:
+    """트레이서 호출을 전부 기록하는 모의 트레이서."""
+
+    def __init__(self) -> None:
+        """기록 저장소를 초기화한다."""
+        self.started: list[tuple] = []
+        self.spans: list[tuple] = []
+        self.ended: list[dict] = []
+
+    def start(self, name, input):
+        """트레이스 시작을 기록한다."""
+        self.started.append((name, input))
+
+    def span(self, name, output, started_at, ended_at):
+        """스팬을 기록한다 — 시각이 순서대로인지도 검증 가능하게 남긴다."""
+        self.spans.append((name, output, started_at, ended_at))
+
+    def end(self, output):
+        """트레이스 종료를 기록한다."""
+        self.ended.append(output)
+
+
+def test_tracer_records_trace_and_node_spans():
+    """트레이서에 트레이스 1건과 지나간 노드들의 스팬이 순서대로 기록된다."""
+    tracer = FakeTracer()
+    run_triage(ScriptedLLM([NORMAL, HIGHLIGHTS]), "GET /health 200", tracer=tracer)
+    assert tracer.started[0][0] == "log-triage"
+    assert [s[0] for s in tracer.spans] == ["classify", "digest", "report"]
+    assert tracer.ended == [{"severity": "normal", "retries": 0}]
+
+
+def test_tracer_span_hides_report_body():
+    """report 본문은 스팬에 싣지 않고 길이 요약만 남긴다."""
+    tracer = FakeTracer()
+    run_triage(ScriptedLLM([NORMAL, HIGHLIGHTS]), "log", tracer=tracer)
+    report_span = tracer.spans[-1][1]
+    assert "report" not in report_span and report_span["report_chars"] > 0
+
+
+def test_tracer_records_retries_on_failure_path():
+    """전부 실패해도 트레이스는 닫히고 재시도 횟수가 남는다."""
+    tracer = FakeTracer()
+    run_triage(ScriptedLLM(["잡담"] * MAX_RETRIES), "log", tracer=tracer)
+    assert tracer.ended == [{"severity": None, "retries": MAX_RETRIES}]
+
+
+def test_default_tracer_is_noop_without_env(monkeypatch):
+    """LANGFUSE_SECRET_KEY가 없으면 기본 트레이서는 무동작이고 실행을 막지 않는다."""
+    monkeypatch.delenv("LANGFUSE_SECRET_KEY", raising=False)
+    result = run_triage(ScriptedLLM([NORMAL, HIGHLIGHTS]), "log")  # tracer 미지정
+    assert "NORMAL" in result["report"]

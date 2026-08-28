@@ -58,11 +58,22 @@ log-triage data/incident.log --backend claude-cli
 1. ...
 ```
 
+## 관측 (Langfuse, 선택)
+
+```bash
+pip install -e ".[obs]"
+export LANGFUSE_PUBLIC_KEY="pk-..."
+export LANGFUSE_SECRET_KEY="sk-..."
+export LANGFUSE_HOST="https://cloud.langfuse.com"   # 셀프호스팅이면 해당 주소
+```
+
+키만 설정하면 실행마다 트레이스 1건이 남습니다 — 노드별(classify·root_cause·digest·report) 스팬과 실행 시간, 재시도 횟수, 최종 심각도까지. 키가 없으면 관측 코드는 완전 무동작(no-op)이라 성능·동작에 영향이 없습니다.
+
 ## 테스트
 
 ```bash
 pip install -e ".[dev]"
-pytest   # 9건, 네트워크 불필요 — critical/normal 라우팅, 재시도 루프, 상한 소진, 파싱 내성
+pytest   # 13건, 네트워크 불필요 — critical/normal 라우팅, 재시도 루프, 상한 소진, 파싱 내성, 트레이서 기록
 ```
 
 ## 함께 보기

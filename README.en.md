@@ -43,11 +43,22 @@ log-triage data/incident.log --backend claude-cli
 
 Two synthetic logs are bundled: `data/incident.log` (repeated OOM → critical path) and `data/normal.log` (quiet day → digest path).
 
+## Observability (Langfuse, optional)
+
+```bash
+pip install -e ".[obs]"
+export LANGFUSE_PUBLIC_KEY="pk-..."
+export LANGFUSE_SECRET_KEY="sk-..."
+export LANGFUSE_HOST="https://cloud.langfuse.com"
+```
+
+With keys set, every run leaves one trace — per-node spans (classify · root_cause · digest · report) with timings, retry count, and final severity. Without keys the tracing layer is a complete no-op.
+
 ## Tests
 
 ```bash
 pip install -e ".[dev]"
-pytest   # 9 tests, no network
+pytest   # 13 tests, no network
 ```
 
 ## See also
