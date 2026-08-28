@@ -13,6 +13,7 @@ dependencies = ["langgraph>=0.2", "httpx>=0.27"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+obs = ["langfuse>=2,<3"]
 
 [project.scripts]
 log-triage = "log_triage.cli:main"
