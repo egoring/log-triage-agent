@@ -9,6 +9,8 @@ description = "LangGraph mini agent that triages server logs: classify, branch b
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
+authors = [{ name = "Jinbeom Jeong", email = "jinbeomj90@gmail.com" }]
+keywords = ["langgraph", "llm-agent", "log-analysis", "observability"]
 dependencies = ["langgraph>=0.2", "httpx>=0.27"]
 
 [project.optional-dependencies]
